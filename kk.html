@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container{
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align: center;
+    color: #4a148c;
+}
+
+h2{
+    color: #333;
+}
+
+.stats{
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.box{
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(135deg,#42a5f5,#7e57c2);
+    transition: 0.3s;
+}
+
+.box:hover{
+    transform: scale(1.05);
+}
+
+input[type="text"],
+select{
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+input[type="text"]:focus,
+select:focus{
+    outline: none;
+    border-color: #7e57c2;
+    box-shadow: 0 0 8px rgba(126,87,194,0.5);
+}
+
+.add-btn{
+    background: linear-gradient(135deg,#00c6ff,#0072ff);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.add-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,114,255,0.4);
+}
+
+ul{
+    list-style: none;
+    padding: 0;
+}
+
+li{
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+li:hover{
+    transform: scale(1.02);
+}
+
+.high{
+    background: linear-gradient(135deg,#ff6b6b,#ff8787);
+}
+
+.medium{
+    background: linear-gradient(135deg,#ffd43b,#ffe066);
+}
+
+.low{
+    background: linear-gradient(135deg,#51cf66,#8ce99a);
+}
+
+.completed{
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.delete-btn{
+    background: linear-gradient(135deg,#ff416c,#ff4b2b);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-btn:hover{
+    box-shadow: 0 4px 12px rgba(255,75,43,0.5);
+}
+
+.task-left{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📝 Interactive To-Do List</h1>
+
+    <div class="stats">
+        <div class="box">
+            <h3>Total Tasks</h3>
+            <p id="total">0</p>
+        </div>
+
+        <div class="box">
+            <h3>Completed Tasks</h3>
+            <p id="completed">0</p>
+        </div>
+    </div>
+
+    <h2>Add New Task</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter your task">
+
+    <select id="priority">
+        <option value="high">🔴 High Priority</option>
+        <option value="medium">🟡 Medium Priority</option>
+        <option value="low">🟢 Low Priority</option>
+    </select>
+
+    <button class="add-btn" onclick="addTask()">Add Task</button>
+
+    <h2>Task List</h2>
+
+    <ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+let totalTasks = 0;
+let completedTasks = 0;
+
+function addTask(){
+
+    let taskText = document.getElementById("taskInput").value.trim();
+    let priority = document.getElementById("priority").value;
+
+    if(taskText === ""){
+        alert("Please enter a task!");
+        return;
+    }
+
+    let li = document.createElement("li");
+    li.classList.add(priority);
+
+    li.innerHTML = `
+        <div class="task-left">
+            <input type="checkbox" onchange="toggleTask(this)">
+            <span>${taskText}</span>
+        </div>
+
+        <button class="delete-btn" onclick="deleteTask(this)">
+            Delete
+        </button>
+    `;
+
+    document.getElementById("taskList").appendChild(li);
+
+    totalTasks++;
+    updateStats();
+
+    document.getElementById("taskInput").value = "";
+}
+
+function toggleTask(checkbox){
+
+    let taskText = checkbox.nextElementSibling;
+
+    if(checkbox.checked){
+        taskText.classList.add("completed");
+        completedTasks++;
+    }
+    else{
+        taskText.classList.remove("completed");
+        completedTasks--;
+    }
+
+    updateStats();
+}
+
+function deleteTask(button){
+
+    let li = button.parentElement;
+    let checkbox = li.querySelector("input[type='checkbox']");
+
+    if(checkbox.checked){
+        completedTasks--;
+    }
+
+    totalTasks--;
+    li.remove();
+
+    updateStats();
+}
+
+function updateStats(){
+    document.getElementById("total").innerText = totalTasks;
+    document.getElementById("completed").innerText = completedTasks;
+}
+
+</script>
+
+</body>
+</html>
